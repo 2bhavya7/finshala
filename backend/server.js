@@ -6,6 +6,7 @@ const express = require('express');
 const cors = require('cors');
 const path = require('path');
 const dotenv = require('dotenv');
+const { createProxyMiddleware } = require('http-proxy-middleware');
 
 // Load environment variables
 dotenv.config();
@@ -15,6 +16,18 @@ const PORT = process.env.PORT || 3000;
 
 // Middleware
 app.use(cors());
+
+// Proxy Python API requests safely to internal Flask container port 5000
+app.use('/api', (req, res, next) => {
+  if (req.path === '/health' || req.path.startsWith('/llm/proxy')) {
+    return next(); // Let Node.js handle these
+  }
+  return createProxyMiddleware({ 
+    target: 'http://127.0.0.1:5000', 
+    changeOrigin: true 
+  })(req, res, next);
+});
+
 app.use(express.json());
 
 // API Routes (Future separate backend logic)
