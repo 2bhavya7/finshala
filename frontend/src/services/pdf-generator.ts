@@ -116,7 +116,7 @@ const fmt = (n: number) => n >= 10000000 ? `Rs ${(n/10000000).toFixed(2)}Cr` : n
 
 export async function generateFirePDF(plan: any, aiRoadmap?: string): Promise<void> {
   try {
-    const response = await fetch('https://6296-103-216-89-181.ngrok-free.app/api/generate-report/fire', {
+    const response = await fetch('/api/generate-report/fire', {
       method: 'POST',
       headers: { 'Content-Type': 'application/json' },
       body: JSON.stringify(plan),
@@ -204,7 +204,7 @@ export async function generateFirePDF(plan: any, aiRoadmap?: string): Promise<vo
 
 export async function generateTaxPDF(data: any, aiExplanation?: string): Promise<void> {
   try {
-    const response = await fetch('https://6296-103-216-89-181.ngrok-free.app/api/generate-report/tax', {
+    const response = await fetch('/api/generate-report/tax', {
       method: 'POST',
       headers: { 'Content-Type': 'application/json' },
       body: JSON.stringify(data),
@@ -279,7 +279,7 @@ export async function generateTaxPDF(data: any, aiExplanation?: string): Promise
 
 export async function generateHealthPDF(data: any, aiAdvice?: string): Promise<void> {
   try {
-    const response = await fetch('https://6296-103-216-89-181.ngrok-free.app/api/generate-report/health', {
+    const response = await fetch('/api/generate-report/health', {
       method: 'POST',
       headers: { 'Content-Type': 'application/json' },
       body: JSON.stringify(data),

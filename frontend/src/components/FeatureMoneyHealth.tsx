@@ -78,7 +78,7 @@ function useAssessmentScores() {
         const profile = JSON.parse(raw);
         if (profile?.profile_completed_at) {
           // Call Python API for health score
-          fetch('https://6296-103-216-89-181.ngrok-free.app/api/calculate-health-score', {
+          fetch('/api/calculate-health-score', {
             method: 'POST',
             headers: { 'Content-Type': 'application/json' },
             body: raw,

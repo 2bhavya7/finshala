@@ -12,7 +12,7 @@ import OrbitingSkills from "@/components/ui/orbiting-skills";
 // AI SHALA PAGE — Agentic Financial Intelligence
 // ═══════════════════════════════════════════════
 
-const PYTHON_API = "https://6296-103-216-89-181.ngrok-free.app";
+const PYTHON_API = "";
 
 interface AnalysisResult {
   status: string;

@@ -63,7 +63,7 @@ const SCORE_COLORS = {
 // ═══════════════════════════════════════════════
 
 async function fetchHealthScore(profile: any): Promise<HealthScoreResult> {
-  const resp = await fetch('https://6296-103-216-89-181.ngrok-free.app/api/calculate-health-score', {
+  const resp = await fetch('/api/calculate-health-score', {
     method: 'POST',
     headers: { 'Content-Type': 'application/json' },
     body: JSON.stringify(profile),

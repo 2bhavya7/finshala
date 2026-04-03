@@ -22,7 +22,7 @@ export class Form16Parser {
       formData.append('password', password);
     }
 
-    const response = await fetch('https://6296-103-216-89-181.ngrok-free.app/api/parse-form16', {
+    const response = await fetch('/api/parse-form16', {
       method: 'POST',
       body: formData,
     });

@@ -31,9 +31,20 @@ app.post('/api/llm/proxy', async (req, res) => {
       return res.status(500).json({ error: 'Missing HuggingFace API Key' });
     }
 
-    const payload = messages ? { messages } : { inputs: prompt };
+    let url = `https://router.huggingface.co/models/${model}`;
+    let payload = { inputs: prompt };
+
+    if (messages) {
+      url = `https://router.huggingface.co/v1/chat/completions`;
+      payload = {
+        model: model,
+        messages: messages,
+        max_tokens: 512,
+        stream: false
+      };
+    }
     
-    const response = await fetch(`https://api-inference.huggingface.co/models/${model}`, {
+    const response = await fetch(url, {
       method: "POST",
       headers: {
         "Authorization": `Bearer ${process.env.HF_API_KEY}`,
@@ -43,7 +54,8 @@ app.post('/api/llm/proxy', async (req, res) => {
     });
 
     if (!response.ok) {
-      throw new Error(`HF API Error: ${response.statusText}`);
+      const errText = await response.text().catch(() => '');
+      throw new Error(`HF API Error: ${response.status} - ${errText || response.statusText}`);
     }
 
     const data = await response.json();
@@ -65,7 +77,8 @@ if (process.env.NODE_ENV === 'production') {
 }
 
 // Start Server
-app.listen(PORT, () => {
+app.listen(PORT, '0.0.0.0', () => {
   console.log(`🚀 Finshala Backend running on port ${PORT}`);
   console.log(`👉 Health check: http://localhost:${PORT}/api/health`);
+  console.log(`🌐 Ready for Railway at http://0.0.0.0:${PORT}`);
 });

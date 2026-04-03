@@ -265,7 +265,7 @@ export class FIREEngine {
   public async generatePlanAsync(): Promise<FIREPlan> {
     try {
       console.log("[FIRE Engine] Attempting to call Python backend at /api/calculate-fire-plan");
-      const response = await fetch('https://6296-103-216-89-181.ngrok-free.app/api/calculate-fire-plan', {
+      const response = await fetch('/api/calculate-fire-plan', {
         method: 'POST',
         headers: { 'Content-Type': 'application/json' },
         body: JSON.stringify(this.profile),

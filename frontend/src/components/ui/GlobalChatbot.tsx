@@ -29,8 +29,6 @@ const SUGGESTED_QUESTIONS = [
   "How to calculate my HRA exemption?",
 ];
 
-const API_BASE = "https://6296-103-216-89-181.ngrok-free.app";
-
 // =========================================
 // 2. MARKDOWN-LIKE RENDERER
 // =========================================
@@ -82,17 +80,27 @@ export const GlobalChatbot: React.FC<{ isOpen: boolean; onClose: () => void }> =
     }
 
     try {
-      const res = await fetch(`${API_BASE}/api/chat`, {
+      const systemPrompt = "You are Finshala AI — a warm, knowledgeable Indian financial advisor assistant. You help users with Tax planning, FIRE planning, Money Health Score analysis, Investment advice, Insurance guidance, and General personal finance questions. Be concise but helpful. Use Indian Rupee (₹) for amounts. Reference Indian tax laws and financial products. Be friendly and conversational. Keep responses under 200 words unless the user asks for detail.";
+      
+      const payloadMessages = [
+        { role: "system", content: systemPrompt },
+        ...newMessages.slice(-10).map(m => ({ 
+          role: m.role === "bot" ? "assistant" : "user", 
+          content: m.content 
+        }))
+      ];
+
+      const res = await fetch(`/api/llm/proxy`, {
         method: "POST",
         headers: { "Content-Type": "application/json" },
         body: JSON.stringify({
-          message: query,
-          history: newMessages.slice(-10),
+          model: "meta-llama/Llama-3.1-8B-Instruct:novita",
+          messages: payloadMessages,
         }),
       });
 
       const data = await res.json();
-      const reply = data.reply || data.error || "Sorry, I couldn't process that. Please try again.";
+      const reply = data.text || data.choices?.[0]?.message?.content?.trim() || data.error || data[0]?.generated_text || "Sorry, I couldn't process that. Please try again.";
 
       setMessages(prev => [...prev, {
         role: "bot",
@@ -102,7 +110,7 @@ export const GlobalChatbot: React.FC<{ isOpen: boolean; onClose: () => void }> =
     } catch (err) {
       setMessages(prev => [...prev, {
         role: "bot",
-        content: "Connection error. Please make sure the backend server is running on port 5000 and Ollama is active with `llama3.1:8b`.",
+        content: "I'm having trouble connecting to my AI engine right now. Please try again in a moment.",
         timestamp: Date.now(),
       }]);
     } finally {

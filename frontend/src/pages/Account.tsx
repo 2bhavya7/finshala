@@ -188,7 +188,7 @@ const ReportsTab = () => {
         try {
           const raw = localStorage.getItem('finshala_user_profile');
           const profileData = raw ? JSON.parse(raw) : (await import('@/services/health-score-engine')).DEFAULT_HEALTH_PROFILE;
-          const resp = await fetch('https://6296-103-216-89-181.ngrok-free.app/api/calculate-health-score', {
+          const resp = await fetch('/api/calculate-health-score', {
             method: 'POST',
             headers: { 'Content-Type': 'application/json' },
             body: JSON.stringify(profileData),
