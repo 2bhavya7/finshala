@@ -18,15 +18,14 @@ const PORT = process.env.PORT || 3000;
 app.use(cors());
 
 // Proxy Python API requests safely to internal Flask container port 5000
-app.use('/api', (req, res, next) => {
-  if (req.path === '/health' || req.path.startsWith('/llm/proxy')) {
-    return next(); // Let Node.js handle these
+// We avoid app.use('/api') so Express doesn't strip the `/api` prefix before forwarding!
+app.use(createProxyMiddleware({ 
+  target: 'http://127.0.0.1:5000', 
+  changeOrigin: true,
+  pathFilter: (path, req) => {
+    return path.startsWith('/api') && path !== '/api/health' && !path.startsWith('/api/llm/proxy');
   }
-  return createProxyMiddleware({ 
-    target: 'http://127.0.0.1:5000', 
-    changeOrigin: true 
-  })(req, res, next);
-});
+}));
 
 app.use(express.json());
 
